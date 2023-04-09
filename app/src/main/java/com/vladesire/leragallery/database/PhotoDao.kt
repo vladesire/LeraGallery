@@ -3,7 +3,7 @@ package com.vladesire.leragallery.database
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.vladesire.leragallery.Photo
+import com.vladesire.leragallery.photos.Photo
 import kotlinx.coroutines.flow.Flow
 
 @Dao

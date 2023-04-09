@@ -1,4 +1,4 @@
-package com.vladesire.leragallery
+package com.vladesire.leragallery.photos
 
 import android.net.Uri
 import androidx.room.Entity

@@ -15,7 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGalleryChooseBinding
-import kotlinx.coroutines.flow.collect
+import com.vladesire.leragallery.photos.Photo
+import com.vladesire.leragallery.photos.PhotoComparator
+import com.vladesire.leragallery.photos.PhotoListAdapter
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "GalleryChooseFragment"
@@ -60,21 +63,28 @@ class GalleryChooseFragment : Fragment() {
             requestPermissionLauncher.launch("android.permission.READ_MEDIA_IMAGES")
         }
 
+        val pagingAdapter = PhotoListAdapter(PhotoComparator)
+        binding.recyclerView.adapter = pagingAdapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                galleryChooseViewModel.photos.collect { photos ->
-                    Toast.makeText(context, "Saved photos size: ${photos.size}", Toast.LENGTH_SHORT).show()
+//                galleryChooseViewModel.photos.collect { photos ->
+//                    Toast.makeText(context, "Saved photos size: ${photos.size}", Toast.LENGTH_SHORT).show()
+//
+//                    binding.recyclerView.adapter = PhotoListAdapter(photos) { photo ->
+//
+//                        photo.isChosen = true
+//
+//                        viewLifecycleOwner.lifecycleScope.launch {
+//                            galleryChooseViewModel.savePhoto(Photo(uri = photo.uri))
+//                        }
+//
+//                    }
+//
+//                }
 
-                    binding.recyclerView.adapter = PhotoListAdapter(photos) { photo ->
-
-                        photo.isChosen = true
-
-                        viewLifecycleOwner.lifecycleScope.launch {
-                            galleryChooseViewModel.savePhoto(Photo(uri = photo.uri))
-                        }
-
-                    }
-
+                galleryChooseViewModel.photosFlow.collectLatest { data ->
+                    pagingAdapter.submitData(data)
                 }
             }
         }

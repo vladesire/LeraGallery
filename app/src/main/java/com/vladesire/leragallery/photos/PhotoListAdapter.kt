@@ -1,16 +1,17 @@
-package com.vladesire.leragallery
+package com.vladesire.leragallery.photos
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.vladesire.leragallery.databinding.ListItemPhotoBinding
 
 class PhotoListAdapter(
-    private val photos: List<Photo>,
+    diffCallback: DiffUtil.ItemCallback<Photo>,
     private val onItemClicked: ((Photo) -> Unit)? = null
-) : RecyclerView.Adapter<PhotoViewHolder>() {
+) : PagingDataAdapter<Photo, PhotoViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemPhotoBinding.inflate(inflater, parent, false)
@@ -18,25 +19,24 @@ class PhotoListAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        holder.bind(photos[position], onItemClicked)
+        holder.bind(getItem(position), onItemClicked)
     }
-
-    override fun getItemCount() = photos.size
 }
 
 
 class PhotoViewHolder(
     private val binding: ListItemPhotoBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(photo: Photo, onItemClicked: ((Photo) -> Unit)?) {
-        binding.image.load(photo.uri)
+    fun bind(photo: Photo?, onItemClicked: ((Photo) -> Unit)?) {
 
-        binding.image.rotation = if (photo.isChosen) 45f else 0f
-
+        photo?.let {
+            binding.image.load(it.uri)
+            binding.image.rotation = if (it.isChosen) 45f else 0f
+        }
 
         onItemClicked?.let { callback ->
-            binding.image.setOnClickListener {
-                callback(photo)
+            binding.image.setOnClickListener { _ ->
+                photo?.let { it -> callback(it) }
             }
         }
     }

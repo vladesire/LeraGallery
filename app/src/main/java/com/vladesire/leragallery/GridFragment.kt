@@ -7,12 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGridBinding
-import kotlinx.coroutines.flow.collect
+import com.vladesire.leragallery.photos.PhotoListAdapter
 import kotlinx.coroutines.launch
 
 class GridFragment : Fragment() {
@@ -38,15 +37,15 @@ class GridFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                selectedPhotosViewModel.savedPhotos.collect {
-                    binding.gridRecyclerView.adapter = PhotoListAdapter(it)
-                }
-
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//
+//                selectedPhotosViewModel.savedPhotos.collect {
+//                    binding.gridRecyclerView.adapter = PhotoListAdapter(it)
+//                }
+//
+//            }
+//        }
 
 
     }

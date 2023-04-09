@@ -1,11 +1,15 @@
 package com.vladesire.leragallery
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.vladesire.leragallery.photos.LocalPhotosService
+import com.vladesire.leragallery.photos.Photo
+import com.vladesire.leragallery.photos.PhotoPagingSource
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 // Dependency injection
 class GalleryChooseViewModel(
@@ -14,27 +18,35 @@ class GalleryChooseViewModel(
     private val _photos: MutableStateFlow<List<Photo>> = MutableStateFlow(emptyList())
     val photos: StateFlow<List<Photo>> = _photos
 
+    val photosFlow = Pager(
+        PagingConfig(pageSize = 100, prefetchDistance = 25)
+    ) {
+        photoRepository.getLocalPhotosPagingSource()
+    }.flow
+        .cachedIn(viewModelScope)
+
     init {
-        viewModelScope.launch {
+//        viewModelScope.launch {
+//
+//            photoRepository.getPhotos(0, 20)
+//                .combine(photoRepository.getSavedPhotos()) { photos, saved ->
+//
+//                    Log.i("GalleryChooseViewModel", "Saved size: ${saved.size}")
+//
+//                    photos.forEach { photo ->
+//                        saved.forEach {
+//                            if (photo.uri == it.uri) {
+//                                photo.isChosen = true
+//                            }
+//                        }
+//                    }
+//                    photos
+//                }.collect {
+//                    Log.i("GalleryChooseViewModel", "Collected new photos")
+//                    _photos.value = it
+//                }
+//        }
 
-            photoRepository.getPhotos(0, 20)
-                .combine(photoRepository.getSavedPhotos()) { photos, saved ->
-
-                    Log.i("GalleryChooseViewModel", "Saved size: ${saved.size}")
-
-                    photos.forEach { photo ->
-                        saved.forEach {
-                            if (photo.uri == it.uri) {
-                                photo.isChosen = true
-                            }
-                        }
-                    }
-                    photos
-                }.collect {
-                    Log.i("GalleryChooseViewModel", "Collected new photos")
-                    _photos.value = it
-                }
-        }
     }
 
     suspend fun savePhoto(photo: Photo) {
