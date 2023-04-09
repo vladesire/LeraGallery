@@ -15,4 +15,6 @@ interface PhotoDao {
     @Insert
     suspend fun savePhoto(photo: Photo)
 
+    @Query("DELETE FROM photos")
+    suspend fun erase()
 }

@@ -37,6 +37,8 @@ class PhotoRepository private constructor(
 
     fun getLocalPhotosPagingSource() = PhotoPagingSource(LocalPhotosService(context))
 
+    suspend fun eraseSavedPhotos() = database.photoDao().erase()
+
     companion object {
         private var INSTANCE: PhotoRepository? = null
 
