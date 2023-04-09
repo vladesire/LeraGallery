@@ -49,7 +49,6 @@ class MainMenuFragment: Fragment() {
                 MainMenuFragmentDirections.showPhotosGrid()
             )
         }
-
     }
 
     override fun onDestroy() {

@@ -30,6 +30,10 @@ class PhotoViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(photo: Photo, onItemClicked: ((Photo) -> Unit)?) {
         binding.image.load(photo.uri)
+
+        binding.image.rotation = if (photo.isChosen) 45f else 0f
+
+
         onItemClicked?.let { callback ->
             binding.image.setOnClickListener {
                 callback(photo)

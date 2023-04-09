@@ -5,14 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGridBinding
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class GridFragment : Fragment() {
 
     private var _binding: FragmentGridBinding? = null
     private val binding
         get() = checkNotNull(_binding) { "FragmentGridBinding is null" }
+
+    private val selectedPhotosViewModel: SelectedPhotosViewModel by viewModels {
+        SelectedPhotosViewModelFactory(PhotoRepository.get())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,11 +38,16 @@ class GridFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val repository = PhotoRepository.get()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
 
-        val photos = repository.getSavedPhotos()
+                selectedPhotosViewModel.savedPhotos.collect {
+                    binding.gridRecyclerView.adapter = PhotoListAdapter(it)
+                }
 
-        binding.gridRecyclerView.adapter = PhotoListAdapter(photos)
+            }
+        }
+
 
     }
 
