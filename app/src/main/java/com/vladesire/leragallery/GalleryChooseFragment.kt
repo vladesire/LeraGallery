@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGalleryChooseBinding
 import com.vladesire.leragallery.photos.Photo
@@ -63,27 +64,17 @@ class GalleryChooseFragment : Fragment() {
             requestPermissionLauncher.launch("android.permission.READ_MEDIA_IMAGES")
         }
 
-        val pagingAdapter = PhotoListAdapter(PhotoComparator)
+        val pagingAdapter = PhotoListAdapter(PhotoComparator) { photo ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                galleryChooseViewModel.savePhoto(Photo(uri = photo.uri))
+            }
+        }
+
         binding.recyclerView.adapter = pagingAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                galleryChooseViewModel.photos.collect { photos ->
-//                    Toast.makeText(context, "Saved photos size: ${photos.size}", Toast.LENGTH_SHORT).show()
-//
-//                    binding.recyclerView.adapter = PhotoListAdapter(photos) { photo ->
-//
-//                        photo.isChosen = true
-//
-//                        viewLifecycleOwner.lifecycleScope.launch {
-//                            galleryChooseViewModel.savePhoto(Photo(uri = photo.uri))
-//                        }
-//
-//                    }
-//
-//                }
-
-                galleryChooseViewModel.photosFlow.collectLatest { data ->
+                galleryChooseViewModel.photos.collectLatest { data ->
                     pagingAdapter.submitData(data)
                 }
             }

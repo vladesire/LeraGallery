@@ -1,5 +1,6 @@
 package com.vladesire.leragallery.photos
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -19,7 +20,10 @@ class PhotoListAdapter(
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        holder.bind(getItem(position), onItemClicked)
+        holder.bind(getItem(position), onItemClicked) {
+            notifyItemChanged(position)
+        }
+
     }
 }
 
@@ -27,16 +31,20 @@ class PhotoListAdapter(
 class PhotoViewHolder(
     private val binding: ListItemPhotoBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(photo: Photo?, onItemClicked: ((Photo) -> Unit)?) {
+    fun bind(photo: Photo?, onItemClicked: ((Photo) -> Unit)?, adapterCallback: () -> Unit) {
 
         photo?.let {
             binding.image.load(it.uri)
             binding.image.rotation = if (it.isChosen) 45f else 0f
         }
 
-        onItemClicked?.let { callback ->
-            binding.image.setOnClickListener { _ ->
-                photo?.let { it -> callback(it) }
+        binding.image.setOnClickListener { _ ->
+            photo?.let {
+                photo.isChosen = true
+                adapterCallback()
+                onItemClicked?.let { callback ->
+                    callback(it)
+                }
             }
         }
     }
