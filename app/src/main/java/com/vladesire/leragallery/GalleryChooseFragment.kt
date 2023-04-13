@@ -6,16 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGalleryChooseBinding
+import com.vladesire.leragallery.photos.LocalPhotosService
 import com.vladesire.leragallery.photos.Photo
 import com.vladesire.leragallery.photos.PhotoComparator
 import com.vladesire.leragallery.photos.PhotoListAdapter
@@ -31,7 +30,10 @@ class GalleryChooseFragment : Fragment() {
         get() = checkNotNull(_binding) { "Cannot access binding" }
 
     private val galleryChooseViewModel: GalleryChooseViewModel by viewModels {
-        GalleryChooseViewModelFactory(PhotoRepository.get())
+        GalleryChooseViewModelFactory(
+            SavedPhotosRepository.get(),
+            LocalPhotosService.get()
+        )
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -71,6 +73,9 @@ class GalleryChooseFragment : Fragment() {
         }
 
         binding.recyclerView.adapter = pagingAdapter
+
+        // TODO: Write custom animator
+        // binding.recyclerView.itemAnimator
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -6,8 +6,9 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
+import com.vladesire.leragallery.SavedPhotosRepository
 
-class LocalPhotosService(
+class LocalPhotosService private constructor(
     private val context: Context
 ) : PhotosService {
     override fun getPhotos(page: Int, pageSize: Int): List<Photo> {
@@ -56,5 +57,20 @@ class LocalPhotosService(
         }
 
         return photos
+    }
+
+    companion object {
+        private var INSTANCE: LocalPhotosService? = null
+
+        // Application's context lives long enough
+        fun initialize(context: Context) {
+            if (INSTANCE == null) {
+                INSTANCE = LocalPhotosService(context)
+            }
+        }
+
+        fun get(): LocalPhotosService {
+            return INSTANCE ?: throw IllegalStateException("LocalPhotosService must be initialized")
+        }
     }
 }

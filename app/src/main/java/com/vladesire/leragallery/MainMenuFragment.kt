@@ -6,11 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.vladesire.leragallery.databinding.FragmentMainMenuBinding
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainMenuFragment"
 
@@ -48,6 +51,14 @@ class MainMenuFragment: Fragment() {
             findNavController().navigate(
                 MainMenuFragmentDirections.showPhotosGrid()
             )
+        }
+
+        binding.eraseButton.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                SavedPhotosRepository.get().eraseSavedPhotos() {
+                    Toast.makeText(context, "Erased all photos!", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

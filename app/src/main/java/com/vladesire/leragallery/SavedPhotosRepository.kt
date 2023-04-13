@@ -14,9 +14,8 @@ import kotlinx.coroutines.flow.Flow
 private const val TAG = "PhotoRepository"
 
 private const val DATABASE_NAME = "photos-database"
-class PhotoRepository private constructor(
-    private val context: Context,
-    private val coroutineScope: CoroutineScope = GlobalScope
+class SavedPhotosRepository private constructor(
+    private val context: Context
 ){
 
     private val database: PhotoDatabase = Room
@@ -26,31 +25,29 @@ class PhotoRepository private constructor(
             DATABASE_NAME
         ).build()
 
-    private val savedPhotos = mutableListOf<Photo>()
-
     suspend fun savePhoto(photo: Photo) {
         database.photoDao().savePhoto(photo)
-        Log.i(TAG, "Saved photo $photo; (${savedPhotos.size})")
     }
 
-    fun getSavedPhotos(): Flow<List<Photo>> = database.photoDao().getPhotos()
+    suspend fun getSavedPhotos(): List<Photo> = database.photoDao().getPhotos()
 
-    fun getLocalPhotosPagingSource() = PhotoPagingSource(LocalPhotosService(context))
-
-    suspend fun eraseSavedPhotos() = database.photoDao().erase()
+    suspend fun eraseSavedPhotos(onErased: (() -> Unit)? = null) {
+        database.photoDao().erase()
+        onErased?.let { it() }
+    }
 
     companion object {
-        private var INSTANCE: PhotoRepository? = null
+        private var INSTANCE: SavedPhotosRepository? = null
 
         // Application's context lives long enough
         fun initialize(context: Context) {
             if (INSTANCE == null) {
-                INSTANCE = PhotoRepository(context)
+                INSTANCE = SavedPhotosRepository(context)
             }
         }
 
-        fun get(): PhotoRepository {
-            return INSTANCE ?: throw IllegalStateException("PhotoRepository must be initialized")
+        fun get(): SavedPhotosRepository {
+            return INSTANCE ?: throw IllegalStateException("SavedPhotosRepository must be initialized")
         }
     }
 }

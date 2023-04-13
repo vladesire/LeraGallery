@@ -6,13 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGridBinding
-import com.vladesire.leragallery.photos.PhotoListAdapter
-import kotlinx.coroutines.launch
 
 class GridFragment : Fragment() {
 
@@ -21,7 +16,7 @@ class GridFragment : Fragment() {
         get() = checkNotNull(_binding) { "FragmentGridBinding is null" }
 
     private val selectedPhotosViewModel: SelectedPhotosViewModel by viewModels {
-        SelectedPhotosViewModelFactory(PhotoRepository.get())
+        SelectedPhotosViewModelFactory(SavedPhotosRepository.get())
     }
 
     override fun onCreateView(

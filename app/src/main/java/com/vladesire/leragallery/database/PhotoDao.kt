@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface PhotoDao {
 
     @Query("SELECT * FROM photos")
-    fun getPhotos(): Flow<List<Photo>>
+    suspend fun getPhotos(): List<Photo>
 
     @Insert
     suspend fun savePhoto(photo: Photo)

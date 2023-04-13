@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class SelectedPhotosViewModel(
-    private val photosRepository: PhotoRepository
+    private val savedPhotosRepository: SavedPhotosRepository
 ): ViewModel() {
 
     private val _savedPhotos: MutableStateFlow<List<Photo>> = MutableStateFlow(emptyList())
@@ -19,16 +19,14 @@ class SelectedPhotosViewModel(
 
     init {
         viewModelScope.launch {
-            photosRepository.getSavedPhotos().collect {
-                _savedPhotos.value = it
-            }
+            _savedPhotos.value = savedPhotosRepository.getSavedPhotos()
         }
     }
 
 }
 
 class SelectedPhotosViewModelFactory(
-    private val photosRepository: PhotoRepository
+    private val photosRepository: SavedPhotosRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SelectedPhotosViewModel(photosRepository) as T
