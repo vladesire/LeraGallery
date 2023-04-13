@@ -17,7 +17,7 @@ import com.vladesire.leragallery.databinding.FragmentGalleryChooseBinding
 import com.vladesire.leragallery.photos.LocalPhotosService
 import com.vladesire.leragallery.photos.Photo
 import com.vladesire.leragallery.photos.PhotoComparator
-import com.vladesire.leragallery.photos.PhotoListAdapter
+import com.vladesire.leragallery.photos.SystemPhotoListAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -66,7 +66,7 @@ class GalleryChooseFragment : Fragment() {
             requestPermissionLauncher.launch("android.permission.READ_MEDIA_IMAGES")
         }
 
-        val pagingAdapter = PhotoListAdapter(PhotoComparator) { photo ->
+        val pagingAdapter = SystemPhotoListAdapter(PhotoComparator) { photo ->
             viewLifecycleOwner.lifecycleScope.launch {
                 galleryChooseViewModel.savePhoto(Photo(uri = photo.uri))
             }
