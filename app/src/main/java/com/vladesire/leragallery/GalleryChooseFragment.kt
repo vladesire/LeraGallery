@@ -14,10 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.vladesire.leragallery.databinding.FragmentGalleryChooseBinding
-import com.vladesire.leragallery.photos.LocalPhotosService
-import com.vladesire.leragallery.photos.Photo
-import com.vladesire.leragallery.photos.PhotoComparator
-import com.vladesire.leragallery.photos.SystemPhotoListAdapter
+import com.vladesire.leragallery.photos.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -75,7 +72,7 @@ class GalleryChooseFragment : Fragment() {
         binding.recyclerView.adapter = pagingAdapter
 
         // TODO: Write custom animator
-        // binding.recyclerView.itemAnimator
+        binding.recyclerView.itemAnimator = SystemPhotoItemAnimator()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

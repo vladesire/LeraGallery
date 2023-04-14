@@ -1,7 +1,9 @@
 package com.vladesire.leragallery.photos
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.RotateAnimation
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -22,7 +24,7 @@ class SystemPhotoListAdapter(
     }
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         holder.bind(getItem(position), onItemClicked) {
-            notifyItemChanged(position)
+            notifyItemChanged(position, SystemPhotoItemAnimator.SAVED_ANIMATION)
         }
     }
 }
@@ -47,7 +49,8 @@ class SavedPhotoListAdapter(
 
 class PhotoViewHolder(
     private val type: Int,
-    private val binding: ListItemPhotoBinding
+    // Exposed for custom animator
+    val binding: ListItemPhotoBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(photo: Photo?, onItemClicked: ((Photo) -> Unit)?, adapterCallback: (() -> Unit)? = null) {
 
@@ -55,7 +58,22 @@ class PhotoViewHolder(
             binding.image.load(it.uri)
 
             if (type == SYSTEM_PHOTO) {
+
+                // TODO: Animations don't work
+
+                Log.e("PhotoViewHolder", "APPLYING ROTATION")
                 binding.image.rotation = if (it.isChosen) 45f else 0f
+
+//                binding.image.animation?.let { animation ->
+//                    animation.cancel()
+//                }
+//
+//                if (binding.image.animation?.hasEnded() == false) {
+//                } else {
+//
+//
+//                }
+
             }
         }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/mainMenuFragment">
 
@@ -14,6 +15,9 @@
         <action
             android:id="@+id/showPhotosGrid"
             app:destination="@id/gridFragment" />
+        <action
+            android:id="@+id/action_mainMenuFragment_to_swiperFragment"
+            app:destination="@id/swiperFragment" />
     </fragment>
     <fragment
         android:id="@+id/galleryChooseFragment"
@@ -23,4 +27,9 @@
         android:id="@+id/gridFragment"
         android:name="com.vladesire.leragallery.GridFragment"
         android:label="GridFragment" />
+    <fragment
+        android:id="@+id/swiperFragment"
+        android:name="com.vladesire.leragallery.SwiperFragment"
+        android:label="fragment_swiper"
+        tools:layout="@layout/fragment_swiper" />
 </navigation>
